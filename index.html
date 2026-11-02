@@ -114,11 +114,11 @@
   <header class="hero">
     <div class="eyebrow">MALDIVES · ABU DHABI · 2026</div>
     <h1>우리 둘의 신혼여행</h1>
-    <div class="subline">11월 7일 출발 — 11월 17일 귀국<br>광현 & 진옥, 함께 준비하는 11일</div>
+    <div class="subline">앱을 연결하면 개인 일정이 표시됩니다</div>
     <div class="travel-clock" id="liveClock" role="timer" aria-live="off"><div><div class="clock-label" id="clockZoneLabel">현재 기기 지역 시각</div><div class="clock-time" id="clockLocal">--:--:--</div></div><div class="clock-aux" id="clockKst">한국시각 확인 중</div></div>
     <div class="hero-row">
-      <div class="hero-stat"><small id="countdownLabel">여행 시작까지</small><strong id="countdown">D-5</strong><small id="subcount">오늘 할 일부터 하나씩</small></div>
-      <div class="progress-disc" id="progressDisc"><div class="progress-inner"><strong id="percent">0%</strong><span id="countLabel">0 / 51</span></div></div>
+      <div class="hero-stat"><small id="countdownLabel">여행 시작까지</small><strong id="countdown">—</strong><small id="subcount">오늘 할 일부터 하나씩</small></div>
+      <div class="progress-disc" id="progressDisc"><div class="progress-inner"><strong id="percent">0%</strong><span id="countLabel">0 / 0</span></div></div>
     </div>
   </header>
   <div class="utility">
@@ -161,6 +161,7 @@
 
   function todayString(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
   function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function ownerList(){return [...new Set([...state.tasks,...state.packing].map(x=>x.owner).filter(Boolean))];}
   function dateText(date){if(!date)return '날짜 미정';const d=new Date(date+'T12:00:00');return `${d.getMonth()+1}월 ${d.getDate()}일 ${new Intl.DateTimeFormat('ko-KR',{weekday:'long'}).format(d)}`}
   function setView(v){state.view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));render();if((v==='today'||v==='all')&&state.online)void refreshTasks(false);if(v==='trip')refreshLocalClock();window.scrollTo({top:0,behavior:'smooth'})}
   function ownerFilter(v){state.owner=v;render()}
@@ -173,7 +174,7 @@
     if(state.query.trim()){const q=state.query.toLowerCase().trim();list=list.filter(t=>(t.title+' '+t.detail+' '+t.owner).toLowerCase().includes(q))}
     const priority=t=>({'긴급':0,'높음':1,'보통':2}[t.priority]??3);
     const sortTasks=(a,b)=>a.due.localeCompare(b.due)||priority(a)-priority(b);
-    let h=`<section class="section"><h2 class="section-title">${state.view==='today'?'지금 해야 할 일':'전체 준비 체크리스트'}</h2><div class="section-kicker">${state.view==='today'?'기한 지난 미완료 → 오늘 할 일 → 완료한 일 · 원래 마감일 유지':'날짜순 · 우선순위순 · 완료 여부 표시'}</div><div class="filters">${['전체','광현','진옥','함께'].map(x=>`<button class="chip ${x===state.owner?'active':''}" onclick="ownerFilter('${x}')">${x==='전체'?'전체 담당':x}</button>`).join('')}</div><input class="search" value="${esc(state.query)}" aria-label="할 일 검색" oninput="queryFilter(this.value)" placeholder="할 일 검색 (여권, 사막투어, 체크인...)"/><div class="tiny" style="margin:13px 2px 4px">${list.length}개 항목</div>`;
+    let h=`<section class="section"><h2 class="section-title">${state.view==='today'?'지금 해야 할 일':'전체 준비 체크리스트'}</h2><div class="section-kicker">${state.view==='today'?'기한 지난 미완료 → 오늘 할 일 → 완료한 일 · 원래 마감일 유지':'날짜순 · 우선순위순 · 완료 여부 표시'}</div><div class="filters">${['전체',...ownerList()].map(x=>`<button class="chip ${x===state.owner?'active':''}" onclick="ownerFilter('${x}')">${x==='전체'?'전체 담당':x}</button>`).join('')}</div><input class="search" value="${esc(state.query)}" aria-label="할 일 검색" oninput="queryFilter(this.value)" placeholder="할 일 검색 (여권, 사막투어, 체크인...)"/><div class="tiny" style="margin:13px 2px 4px">${list.length}개 항목</div>`;
     if(HAS_BACKEND&&!state.online&&!state.hasCache)return h+'<div class="task-sync-warning">Google Sheets 연결 또는 캐시가 없습니다. 온라인에서 한 번 동기화해 주세요.</div></section>';
     if(state.view==='today'){
       const groups=[
@@ -360,7 +361,7 @@
     const pending=tasks.filter(t=>t.status!=='완료').sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
     return `<aside class="desktop-sidebar" aria-label="대시보드 통계"><div class="dashboard-tile"><h3>전체 준비 진행률</h3><strong>${finished} / ${total}</strong><p>일정·예약 준비 완료</p><div class="bag-meter"><span style="width:${total?finished/total*100:0}%"></span></div></div>
       <div class="dashboard-tile"><h3>짐 챙기기 진행률</h3><strong>${packed} / ${items.length}</strong><p>4개 가방에 분류된 준비물</p><div class="bag-meter"><span style="width:${items.length?packed/items.length*100:0}%"></span></div><button class="chip" style="margin-top:12px" onclick="setView('packing')">짐 목록 보기</button></div>
-      <div class="dashboard-tile"><h3>담당자별 남은 일</h3>${['광현','진옥','함께'].map(o=>`<div class="sidebar-mini"><span>${o}</span><b>${tasks.filter(t=>t.owner===o&&t.status!=='완료').length}개</b></div>`).join('')}</div>
+      <div class="dashboard-tile"><h3>담당자별 남은 일</h3>${ownerList().map(o=>`<div class="sidebar-mini"><span>${o}</span><b>${tasks.filter(t=>t.owner===o&&t.status!=='완료').length}개</b></div>`).join('')}</div>
       <div class="dashboard-tile"><h3>가장 가까운 일정</h3>${pending.map(t=>`<div class="sidebar-mini"><span style="max-width:185px">${esc(t.title)}</span><b>${esc(t.due.slice(5))}</b></div>`).join('')}</div></aside>`;
   }
   function renderPacking(){
@@ -372,7 +373,7 @@
     let cats=[...new Set(list.map(x=>x.category))];
     return `<section class="section"><div class="pack-headerbar"><h2 class="section-title">짐 챙기기</h2><button class="pack-primary" onclick="openPackingForm()">+ 준비물 추가</button></div><p class="section-kicker">물건별 추가·수정·삭제·복원 · Google Sheets에 공동 저장</p><div class="packing-summary">${cards}</div>
       <div class="filters"><button class="chip ${state.packingBag==='전체'?'active':''}" onclick="packingBagFilter('전체')">가방 전체</button>${BAGS.map(b=>`<button class="chip ${state.packingBag===b?'active':''}" onclick="packingBagFilter('${b}')">${esc(b)}</button>`).join('')}</div>
-      <div class="filters" style="margin-top:8px">${['전체','광현','진옥','함께'].map(o=>`<button class="chip ${state.packingOwner===o?'active':''}" onclick="packingOwnerFilter('${o}')">${o==='전체'?'모든 담당':o}</button>`).join('')}</div>
+      <div class="filters" style="margin-top:8px">${['전체',...ownerList()].map(o=>`<button class="chip ${state.packingOwner===o?'active':''}" onclick="packingOwnerFilter('${o}')">${o==='전체'?'모든 담당':o}</button>`).join('')}</div>
       <div style="display:flex;gap:8px;margin-top:10px"><input id="packingSearch" class="search" style="margin:0" placeholder="준비물 검색 (충전기, 수영복...)" value="${esc(state.packingQuery)}" oninput="packingQueryFilter(this.value)"/><button class="chip" onclick="packingQueryFilter('');document.getElementById('packingSearch').value=''">초기화</button></div>
       <div class="packing-count">전체 ${pack.length}개 · 챙김 ${done}개 · 현재 필터 ${list.length}개</div>
       ${!list.length?'<div class="empty">조건에 맞는 준비물이 없습니다.</div>':cats.map(cat=>`<div class="task-date"><h3>${esc(cat)}</h3><small>${list.filter(x=>x.category===cat&&!x.packed).length}개 남음</small></div><div class="pack-list">${list.filter(x=>x.category===cat).map(x=>`<article data-pack-id="${esc(x.id)}" class="pack-card ${x.packed?'is-done':''}"><input class="check" type="checkbox" aria-label="${esc(x.title)} 챙김" ${x.packed?'checked':''} ${state.packingSaving.has(x.id)?'disabled':''} onchange="changePacking('${x.id}','packed',this.checked)"/><div class="task-main"><div class="pack-title">${esc(x.title)}</div><div class="pack-meta"><span class="pill owner">${esc(x.owner)}</span><span class="pill">수량 ${x.qty}</span>${x.note?`<span class="tiny">${esc(x.note)}</span>`:''}</div></div><div class="pack-right"><select aria-label="${esc(x.title)} 가방" class="bag-select" ${state.packingSaving.has(x.id)?'disabled':''} onchange="changePacking('${x.id}','bag',this.value)">${BAGS.map(b=>`<option ${x.bag===b?'selected':''} value="${esc(b)}">${esc(b)}</option>`).join('')}</select><button class="pack-edit" onclick="openPackingForm('${x.id}')" aria-label="${esc(x.title)} 수정">수정</button></div></article>`).join('')}</div>`).join('')}
@@ -421,7 +422,7 @@
         <div class="pack-form">
           <label class="pack-field full">물품명 <input name="title" required maxlength="120" placeholder="예: 휴대용 손거울" value="${esc(item?.title||'')}" /></label>
           <label class="pack-field">분류 <input name="category" required maxlength="60" list="packCategoryOptions" placeholder="분류 선택 또는 직접 입력" value="${esc(item?.category||'여행용품')}"/><datalist id="packCategoryOptions">${categories.map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist></label>
-          <label class="pack-field">담당자 <select name="owner">${['광현','진옥','함께'].map(x=>`<option ${x===(item?.owner||'함께')?'selected':''}>${x}</option>`).join('')}</select></label>
+          <label class="pack-field">담당자 <select name="owner">${ownerList().map(x=>`<option ${x===(item?.owner||'함께')?'selected':''}>${x}</option>`).join('')}</select></label>
           <label class="pack-field">수량 <input name="qty" type="number" min="1" max="999" required value="${item?.qty||1}" /></label>
           <label class="pack-field">넣을 가방 <select name="bag">${BAGS.map(x=>`<option ${x===(item?.bag||'위탁 ①')?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
           <label class="pack-field full">메모 (선택) <textarea name="note" maxlength="400" rows="2" placeholder="준비할 때 참고할 내용">${esc(item?.note||'')}</textarea></label>
