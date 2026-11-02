@@ -109,7 +109,7 @@
 </style>
 </head>
 <body>
-<div id="pwaAuthHint" class="hide" style="position:fixed;z-index:70;top:8px;left:8px;right:8px;max-width:530px;margin:auto;background:#fff7e6;color:#6b4c19;border:1px solid #e7c47c;padding:13px;border-radius:13px;font-size:12px;box-shadow:0 8px 25px #0002">Google 인증 연결이 되지 않았습니다. 인터넷 연결 상태에서 <a href="https://script.google.com/macros/s/AKfycbxsYQaSRXp0cLl_uHr-gdMPyvMH1XIi1Ht2GO28j2CaWghQV_GU2Cw08ESrryovOasZtw/exec" target="_blank" rel="noopener">기존 웹앱에 로그인</a>한 뒤 여기로 돌아와 새로고침해 주세요. 오프라인에 저장된 항목은 계속 사용할 수 있습니다. <button onclick="document.getElementById('pwaAuthHint').classList.add('hide')">닫기</button></div>
+<div id="pwaAuthHint" class="hide" style="position:fixed;z-index:70;top:8px;left:8px;right:8px;max-width:530px;margin:auto;background:#fff7e6;color:#6b4c19;border:1px solid #e7c47c;padding:13px;border-radius:13px;font-size:12px;box-shadow:0 8px 25px #0002">Google 인증 연결이 되지 않았습니다. 인터넷 연결 상태에서 <a href="https://script.google.com/macros/s/AKfycbxsYQaSRXp0cLl_uHr-gdMPyvMH1XIi1Ht2GO28j2CaWghQV_GU2Cw08ESrryovOasZtw/exec" target="_blank" rel="noopener">기존 웹앱에 로그인</a>하거나 <button onclick="connectPwaPopup()">Google 계정 연결</button>을 눌러 주세요. 오프라인에 저장된 항목은 계속 사용할 수 있습니다. <button onclick="document.getElementById('pwaAuthHint').classList.add('hide')">닫기</button></div>
 <div class="app">
   <header class="hero">
     <div class="eyebrow">MALDIVES · ABU DHABI · 2026</div>
@@ -197,6 +197,7 @@
   const PWA_GAS_URL='https://script.google.com/macros/s/AKfycbxsYQaSRXp0cLl_uHr-gdMPyvMH1XIi1Ht2GO28j2CaWghQV_GU2Cw08ESrryovOasZtw/exec';
   const PWA_HOST_ORIGIN='https://s00360209-00067.github.io';
   const bridgeState={ready:false,target:null,origin:null,nextId:1,pending:new Map(),frame:null,loginNeeded:false};
+  function connectPwaPopup(){const w=window.open(PWA_GAS_URL+"?mode=pwa_bridge","honeymoonPwaSync");if(!w)showToast("팝업 허용 후 다시 시도해 주세요.");else w.focus()}
   function bridgeOriginValid(origin){try{const url=new URL(origin);return url.protocol==='https:' && (url.hostname==='script.googleusercontent.com'||url.hostname.endsWith('-script.googleusercontent.com'))}catch(e){return false}}
   function initPwaBridge(){
     if(bridgeState.frame || !navigator.onLine)return;
