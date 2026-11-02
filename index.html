@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07545b">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>우리 둘의 신혼여행 | 체크리스트</title>
+  <style>
+    :root {--teal:#087d82;--dark:#083d48;--ink:#18333f;--muted:#748592;--bg:#f5f8fa;--border:#e5edf0;--white:#fff;--coral:#f3a16b;--red:#c75055;--shadow:0 10px 28px rgba(13,60,72,.06)}
+    *{box-sizing:border-box}html{font-family:ui-sans-serif,system-ui,-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+    body{margin:0;min-width:320px}button,input{font:inherit}button{cursor:pointer}a{color:var(--teal)}
+    .app{max-width:760px;margin:0 auto;min-height:100dvh;padding-bottom:108px;background:var(--bg)}
+    .hero{padding:29px 23px 28px;background:linear-gradient(135deg,#07505c 0%,#088488 100%);color:#fff;position:relative;overflow:hidden;border-radius:0 0 30px 30px}
+    .hero:after{content:"";position:absolute;width:230px;height:230px;right:-87px;top:-69px;border:36px solid rgba(255,255,255,.07);border-radius:50%;pointer-events:none}
+    .eyebrow{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;font-weight:750;color:#b9e9e6;position:relative;z-index:2}
+    .hero h1{font-weight:800;font-size:28px;line-height:1.28;letter-spacing:-1.3px;margin:10px 0 6px;position:relative;z-index:2}
+    .subline{color:#c6e6e5;font-size:12px;line-height:1.65}
+    .hero-row{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:24px;position:relative;z-index:2}
+    .hero-stat{display:flex;flex-direction:column;gap:5px}.hero-stat strong{font-size:27px;letter-spacing:-1px}.hero-stat small{color:#c4e2e2;font-size:12px}
+    .progress-disc{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;flex:none;background:conic-gradient(#c6f5d0 var(--p,0%),rgba(255,255,255,.19) 0);padding:10px}
+    .progress-inner{width:100%;height:100%;border-radius:50%;background:#086c75;display:flex;flex-direction:column;align-items:center;justify-content:center}.progress-inner strong{font-size:22px}.progress-inner span{font-size:10px;color:#b7e8e6}
+    .utility{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:18px 18px 0;padding:12px 13px;background:white;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .utility .status{display:flex;align-items:center;gap:8px;font-size:12px;color:#385d67;font-weight:700}.dot{width:8px;height:8px;border-radius:50%;background:#11b987}.dot.demo{background:#e9a348}.dot.bad{background:#e77c6e}
+    .utility .sync-time{font-size:11px;color:var(--muted)}.utility button{border:0;background:#eaf5f6;color:#086771;border-radius:8px;padding:8px 11px;font-size:12px;font-weight:750}
+    .notice{margin:12px 18px 0;background:#fff8e8;color:#7b5527;border:1px solid #f3dfb3;padding:11px 12px;border-radius:12px;font-size:12px;line-height:1.55}
+    .section{padding:21px 18px 0}.section-title{font-size:18px;font-weight:850;letter-spacing:-.6px;margin:0 0 15px}.section-kicker{color:var(--muted);font-size:12px;margin-top:-8px;margin-bottom:18px}
+    .filters{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:1px 0 6px}.filters::-webkit-scrollbar{display:none}
+    .chip{border:1px solid #dfe8ea;background:#fff;color:#586e78;border-radius:100px;min-width:max-content;padding:9px 14px;font-size:12px;font-weight:750;white-space:nowrap}.chip.active{border-color:#0b727a;background:#0b727a;color:#fff}
+    .search{margin-top:12px;border:1px solid var(--border);border-radius:12px;padding:11px 14px;width:100%;background:white;outline:none;color:var(--ink);font-size:14px}.search:focus{border-color:#12a3a8;box-shadow:0 0 0 3px rgba(18,163,168,.13)}
+    .tiny{font-size:11px;color:var(--muted)}.task-date{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 10px}.task-date h3{margin:0;font-size:13px;font-weight:800;color:#3a626c}.task-date small{font-size:11px;color:#9aa9ae}
+    .task-card{background:#fff;border:1px solid var(--border);padding:15px 11px 15px 13px;display:flex;align-items:flex-start;gap:12px;min-height:76px;border-radius:15px;box-shadow:0 3px 12px rgba(10,60,70,.025);margin-bottom:9px}.task-card.is-done{background:#f5faf8}
+    .check{appearance:none;-webkit-appearance:none;border-radius:7px;width:24px;height:24px;min-width:24px;border:2px solid #c1cfd2;background:white;margin:1px 0 0;position:relative}.check:checked{background:#0aa58f;border-color:#0aa58f}.check:checked:after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:white;font-weight:900;font-size:18px}
+    .task-main{flex:1;min-width:0;cursor:pointer}.task-name{line-height:1.5;letter-spacing:-.35px;font-size:14px;font-weight:700;margin:0;overflow-wrap:anywhere}.is-done .task-name{text-decoration:line-through;color:#8aa49e}.task-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px}.pill{font-size:10px;font-weight:800;background:#eff4f5;color:#667981;border-radius:6px;padding:3px 7px}.pill.high{background:#fff1ee;color:#bb6260}.pill.urgent{background:#fff0e5;color:#b45a22}.pill.owner{background:#eaf6f7;color:#16717b}.pill.progress{background:#fff8df;color:#a87b1f}
+    .more{border:0;background:transparent;color:#9aa9b3;font-size:20px;line-height:20px;padding:4px;margin:-2px 0 0}.empty{border:1px dashed #d8e3e6;text-align:center;color:#83939b;padding:46px 20px;border-radius:16px;background:white;font-size:13px}
+    .itinerary-card{background:white;border:1px solid var(--border);box-shadow:var(--shadow);padding:16px;border-radius:16px;margin-bottom:11px;display:flex;gap:14px;align-items:flex-start}.datebubble{background:#e8f6f4;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:53px;min-width:53px;padding:8px 0;color:#087d7f}.datebubble strong{font-size:18px}.datebubble span{font-size:10px;font-weight:800}.itinerary-card h3{font-size:14px;line-height:1.5;margin:0 0 5px}.itinerary-card p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}.itinerary-card em{font-style:normal;font-size:10px;font-weight:800;color:#a46a22;display:inline-block;margin-top:7px;background:#fff5e7;border-radius:5px;padding:3px 7px}
+    .info-card{background:white;border-radius:15px;border:1px solid var(--border);padding:17px;margin-bottom:10px}.info-card h3{font-size:13px;margin:0 0 7px}.info-card p{font-size:12px;line-height:1.65;color:#6c8189;margin:0}.link{font-weight:750;font-size:12px;margin-top:9px;display:inline-block}
+    .bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(255,255,255,.97);border-top:1px solid #e7edef;display:flex;justify-content:space-around;padding:10px max(calc((100vw - 760px)/2 + 12px),12px) calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 22px rgba(20,53,65,.06)}
+    .nav{background:transparent;border:0;display:flex;align-items:center;flex-direction:column;gap:3px;min-width:64px;padding:3px 9px;color:#90a0a6}.nav svg{height:21px;width:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav span{font-size:11px;font-weight:750}.nav.active{color:var(--teal)}
+    .overlay{position:fixed;inset:0;background:rgba(10,35,44,.48);z-index:40;display:flex;align-items:flex-end;justify-content:center}.modal{width:100%;max-width:760px;background:white;border-radius:24px 24px 0 0;padding:26px 22px calc(25px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(10,35,44,.1);max-height:83dvh;overflow-y:auto}.modal-top{display:flex;justify-content:space-between;align-items:center}.modal h2{font-size:20px;line-height:1.45;letter-spacing:-.6px}.close{border:0;background:#eaf1f2;border-radius:100%;height:30px;width:30px;font-size:22px;line-height:1;color:#54707b}.modal p{font-size:13px;color:#6e838c;line-height:1.8}.actionrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.actionrow button{padding:11px 15px;border-radius:10px;border:1px solid #dce6e8;background:white;color:#536c77;font-weight:800;font-size:12px}.actionrow button.active{background:#0a7c80;border-color:#0a7c80;color:white}
+    .toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);min-width:200px;max-width:calc(100% - 32px);background:#143b44;color:white;border-radius:12px;box-shadow:var(--shadow);padding:12px 15px;font-size:12px;z-index:60;text-align:center}
+    .hide{display:none!important}
+    @media(min-width:620px){.hero{padding:36px 32px}.hero h1{font-size:32px}.section{padding-left:27px;padding-right:27px}.utility,.notice{margin-left:27px;margin-right:27px}.task-name{font-size:15px}}
+  
+    /* Four-bag packing list - thumb-friendly mobile interface. */
+    .packing-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:19px}
+    .bag-card{border:1px solid var(--border);border-radius:15px;background:white;padding:14px;box-shadow:var(--shadow)}
+    .bag-card strong{font-size:14px;display:block}.bag-card .tiny{margin:6px 0;display:block}.bag-meter{height:6px;border-radius:20px;background:#e9f0f2;overflow:hidden}.bag-meter span{display:block;height:100%;background:#0b9e8c;border-radius:20px}
+    .bag-card.selected{border-color:#0f9d93;background:#f1fbf8}.packing-count{font-size:12px;color:#617984;margin:12px 1px 16px}
+    .pack-list{display:grid;gap:9px}.pack-card{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--border);background:white;border-radius:14px;padding:13px;box-shadow:0 3px 10px rgba(10,60,70,.025)}.pack-card.is-done{background:#f1f9f5}
+    .pack-title{font-weight:750;font-size:14px;line-height:1.5}.pack-card.is-done .pack-title{text-decoration:line-through;color:#8aa49e}.pack-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.pack-card .pack-right{margin-left:auto}
+    .bag-select{border:1px solid #cce0e3;background:#f6fbfb;color:#286c71;border-radius:9px;padding:7px 4px;font-size:11px;max-width:105px;min-height:33px}
+    .desktop-sidebar{display:none}.dashboard-tile{background:white;border:1px solid var(--border);padding:18px;border-radius:16px}.dashboard-tile h3{font-size:13px;margin:0 0 10px}.dashboard-tile strong{font-size:28px;color:#087d82}.dashboard-tile p{font-size:12px;line-height:1.6;color:var(--muted)}
+    .sidebar-mini{display:flex;justify-content:space-between;font-size:12px;padding:9px 0;border-top:1px solid var(--border)}.sidebar-mini b{color:#0b777a}.desktop-dashboard-title{display:none}
+    @media(min-width:1050px){
+      body{background:#edf3f5}.app{max-width:none;margin:0 0 0 230px;padding-bottom:24px;min-height:100vh}
+      .bottom{width:230px;height:100vh;top:0;bottom:auto;right:auto;left:0;padding:32px 12px;justify-content:flex-start;flex-direction:column;align-items:stretch;gap:9px;border-right:1px solid #dce8e9;border-top:none;box-shadow:3px 0 22px rgba(10,50,60,.04)}
+      .bottom:before{content:'HONEYMOON 2026';font-weight:900;color:#0a7379;letter-spacing:1px;font-size:13px;padding:0 12px 22px}
+      .bottom .nav{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;min-width:0;border-radius:12px;padding:13px 16px;color:#61757d}
+      .bottom .nav span{font-size:13px}.bottom .nav.active{background:#e6f6f4;color:#0d7b79}
+      .hero{padding:35px clamp(32px,4vw,72px);border-radius:0 0 24px 24px}.hero h1{font-size:35px}
+      .utility,.notice{margin-left:clamp(28px,4vw,65px);margin-right:clamp(28px,4vw,65px)}
+      .section{padding:26px clamp(28px,4vw,65px) 0}.section-title{font-size:22px}
+      .desktop-layout{display:grid;grid-template-columns:minmax(460px,1fr) 300px;align-items:start;gap:20px;max-width:1480px;margin:0 auto}
+      .desktop-layout>.section{padding-right:0}.desktop-sidebar{display:grid;gap:12px;margin:26px clamp(28px,4vw,65px) 0 0}.desktop-sidebar>.dashboard-tile{box-shadow:var(--shadow)}
+      .packing-summary{grid-template-columns:repeat(4,minmax(0,1fr))}.pack-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.pack-card{min-height:87px}
+      .info-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.info-card{margin-bottom:0}
+      .itinerary-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.itinerary-card{margin-bottom:0}
+      .task-card{padding:18px;min-height:84px}.task-name{font-size:15px}
+      .desktop-dashboard-title{display:block;font-size:12px;color:#93adad;letter-spacing:1.4px;margin-top:10px;font-weight:700}
+    }
+    @media(min-width:1600px){.desktop-layout{grid-template-columns:minmax(650px,1fr) 335px}.app{margin-left:250px}.bottom{width:250px}}
+    @media(max-width:374px){.bottom .nav{min-width:52px;padding:3px 5px}.bottom .nav span{font-size:10px}.bag-select{max-width:90px}}
+
+  
+    .travel-clock{position:relative;z-index:2;margin:14px 0 0;padding:11px 13px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(0,0,0,.13);display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap}
+    .travel-clock .clock-label{font-size:10px;color:#d2ecea;font-weight:750}.travel-clock .clock-time{font-size:15px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums}
+    .clock-aux{font-size:10px;color:#c3e8e6;line-height:1.5}
+    .itinerary-card.is-today{background:#e8faf1;border:2px solid #1a9d77;box-shadow:0 5px 19px rgba(16,122,90,.13)}
+    .itinerary-card.is-today .datebubble{background:#0b876b;color:#fff}
+    .today-stamp{display:inline-flex;margin:0 0 7px;padding:3px 8px;background:#087f66;color:white;font-size:10px;font-weight:800;border-radius:100px}
+    .timezone-row{display:block;font-size:12px;line-height:1.7;color:#46616a;margin:6px 0 0}
+    .timezone-row strong{color:#126e73;font-weight:800}
+    .completion-divider{font-size:13px;font-weight:850;color:#0b807b;padding:17px 0 10px;border-top:1px solid #d4e8e5;margin-top:22px}
+    .task-sync-warning{border:1px solid #edc6a5;border-radius:12px;padding:15px;background:#fff7ef;color:#79502f;font-size:13px;line-height:1.6;margin-bottom:12px}
+    .task-card.pending-save{opacity:.62;pointer-events:none}
+    .task-card .check:disabled,.pack-card .check:disabled{background:#e6edee;cursor:not-allowed}
+
+    .pack-headerbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .pack-headerbar h2{margin:0}.pack-primary{background:#087d82;color:#fff;border:0;border-radius:11px;padding:11px 16px;font-weight:800;font-size:13px;white-space:nowrap;min-height:42px}
+    .pack-edit{background:#edf7f7;border:1px solid #d9ebeb;border-radius:9px;font-size:12px;color:#286c71;padding:7px 9px;min-height:34px;margin-top:6px}
+    .pack-controls{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+    .pack-archive-link{padding:8px 12px;border:1px solid #dbe7e9;border-radius:8px;background:white;color:#507079;font-size:12px;cursor:pointer}
+    .pack-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 0}
+    .pack-field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#516a73;font-weight:750}
+    .pack-field.full{grid-column:1/-1}
+    .pack-field input,.pack-field select,.pack-field textarea{border:1px solid #d4e1e5;border-radius:10px;padding:11px 12px;width:100%;min-height:43px;background:#fff;color:#234553;font:inherit;font-size:14px;resize:vertical}
+    .pack-field :is(input,select,textarea):focus{outline:2px solid #65b6b1;outline-offset:0}
+    .pack-action{background:#087d82!important;color:#fff!important;border-color:#087d82!important}.pack-danger{color:#a43f48!important;border-color:#efcfce!important}
+    .pack-modal .modal{max-width:600px}
+    .pack-archived-card{border:1px solid #dce5e8;background:#f7fafb;border-radius:13px;padding:12px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    @media(max-width:375px){.pack-form{grid-template-columns:minmax(0,1fr)}}
+
+  .task-card[aria-busy="true"],.pack-card[aria-busy="true"]{border-color:#87c9d0;box-shadow:inset 3px 0 #0e9b9f}
+  .task-card[aria-busy="true"] .task-meta:after,.pack-card[aria-busy="true"] .pack-meta:after{content:"시트 저장 중…";color:#0b7d86;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="pwaAuthHint" class="hide" style="position:fixed;z-index:70;top:8px;left:8px;right:8px;max-width:530px;margin:auto;background:#fff7e6;color:#6b4c19;border:1px solid #e7c47c;padding:13px;border-radius:13px;font-size:12px;box-shadow:0 8px 25px #0002">Google 인증 연결이 되지 않았습니다. 인터넷 연결 상태에서 <a href="https://script.google.com/macros/s/AKfycbxsYQaSRXp0cLl_uHr-gdMPyvMH1XIi1Ht2GO28j2CaWghQV_GU2Cw08ESrryovOasZtw/exec" target="_blank" rel="noopener">기존 웹앱에 로그인</a>한 뒤 여기로 돌아와 새로고침해 주세요. 오프라인에 저장된 항목은 계속 사용할 수 있습니다. <button onclick="document.getElementById('pwaAuthHint').classList.add('hide')">닫기</button></div>
+<div class="app">
+  <header class="hero">
+    <div class="eyebrow">MALDIVES · ABU DHABI · 2026</div>
+    <h1>우리 둘의 신혼여행</h1>
+    <div class="subline">11월 7일 출발 — 11월 17일 귀국<br>광현 & 진옥, 함께 준비하는 11일</div>
+    <div class="travel-clock" id="liveClock" role="timer" aria-live="off"><div><div class="clock-label" id="clockZoneLabel">현재 기기 지역 시각</div><div class="clock-time" id="clockLocal">--:--:--</div></div><div class="clock-aux" id="clockKst">한국시각 확인 중</div></div>
+    <div class="hero-row">
+      <div class="hero-stat"><small id="countdownLabel">여행 시작까지</small><strong id="countdown">D-5</strong><small id="subcount">오늘 할 일부터 하나씩</small></div>
+      <div class="progress-disc" id="progressDisc"><div class="progress-inner"><strong id="percent">0%</strong><span id="countLabel">0 / 51</span></div></div>
+    </div>
+  </header>
+  <div class="utility">
+    <div><div class="status"><span class="dot demo" id="statusDot"></span><span id="syncTitle">시트 연결 확인 중</span></div><div class="sync-time" id="syncTime">시트를 연결하면 변경 내용이 자동 저장됩니다</div></div>
+    <button type="button" id="refreshBtn" onclick="refreshAll(true)">새로고침</button>
+  </div>
+  <div id="demoNotice" class="notice">Google Sheets 동기화 연결이 확인되지 않았습니다. 저장되지 않는 임시 체크는 제공하지 않습니다. 상단 오류를 확인하고 새로고침해 주세요.</div>
+  <main id="main" aria-live="polite"></main>
+  <nav class="bottom" aria-label="메뉴">
+    <button type="button" class="nav active" data-view="today" onclick="setView('today')"><svg viewBox="0 0 24 24"><path d="M5 4v3M19 4v3M4 10h16M5 6h14a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/></svg><span>오늘</span></button>
+    <button type="button" class="nav" data-view="all" onclick="setView('all')"><svg viewBox="0 0 24 24"><path d="m4 7 2 2 4-4M12 7h8M4 16l2 2 4-4M12 16h8"/></svg><span>전체 할 일</span></button>
+    <button type="button" class="nav" data-view="packing" onclick="setView('packing')"><svg viewBox="0 0 24 24"><path d="M5 8V6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v2M4 8h16v13H4zM9 8v13M15 8v13"/></svg><span>준비물</span></button>
+    <button type="button" class="nav" data-view="trip" onclick="setView('trip')"><svg viewBox="0 0 24 24"><path d="m3 11 18-7-7 18-3-9-8-2Z"/></svg><span>여행 일정</span></button>
+    <button type="button" class="nav" data-view="info" onclick="setView('info')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/></svg><span>예약 정보</span></button>
+  </nav>
+</div>
+<div id="modalRoot" class="hide"></div><div id="toast" class="toast hide" role="status"></div>
+<script>
+  'use strict';
+  const SAMPLE_TASKS=[];
+  const SHEET_URL='';
+  const IS_PWA=true;
+  const HAS_BACKEND=true;
+  const state={view:'today',owner:'전체',query:'',tasks:HAS_BACKEND?[]:SAMPLE_TASKS,online:false,loading:false,saving:new Set(),lastSync:null,packing:[],packingOwner:'전체',packingBag:'전체',packingQuery:'',packingLoading:false,packingSaving:new Set(),packingArchive:[],packingShowArchive:false,packingMutating:false,hasCache:false,pending:[],syncingOffline:false,remoteTasks:[],remotePacking:[],pwaMeta:null};
+  const iconLabels={'긴급':'급함','높음':'중요','보통':'일반'};
+  let itinerary=[];
+  let FLIGHTS={};
+  let ITINERARY_ZONES=[];
+  let ITINERARY_END_DATES={};
+  function partsInZone(at,zone){const p=new Intl.DateTimeFormat('en-US',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(at);return Object.fromEntries(p.filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));}
+  function zoneDate(at,zone){const p=partsInZone(at,zone);return p.year+'-'+p.month+'-'+p.day;}
+  function timeAt(utc,zone){const p=partsInZone(new Date(utc),zone);return p.month+'/'+p.day+' '+p.hour+':'+p.minute;}
+  function itineraryClock(index){const f=FLIGHTS[index];if(f){const current='현지: '+f.fromCity+' '+timeAt(f.from,f.fromZone)+' → '+f.toCity+' '+timeAt(f.to,f.toZone);const seoul='KST: '+timeAt(f.from,'Asia/Seoul')+' → '+timeAt(f.to,'Asia/Seoul');return '<div class="timezone-row"><strong>'+esc(current)+'</strong><span class="timezone-row">'+esc(seoul)+'</span></div>';}
+    if([2,5,7,8,10].includes(index))return '<div class="timezone-row">현지시각 미정 · KST 미정</div>';
+    return '<div class="timezone-row">시간 지정 전 일정 · 현지 날짜 기준</div>';
+  }
+  function isCurrentItinerary(index){const d=zoneDate(new Date(),ITINERARY_ZONES[index]);const date='2026-'+itinerary[index][0].replace('/','-');return d>=date&&d<=(ITINERARY_END_DATES[index]||date);}
+  const ZONE_LABELS={'Asia/Seoul':'한국 · KST','Indian/Maldives':'몰디브 · MVT','Asia/Dubai':'아부다비 · GST'};
+  function refreshLocalClock(){const local=document.getElementById('clockLocal');if(!local)return;const zone=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Seoul';const p=partsInZone(new Date(),zone);const online=navigator.onLine!==false;document.getElementById('clockZoneLabel').textContent=(ZONE_LABELS[zone]||zone)+' · '+(online?'현재 지역(기기 설정)':'오프라인 · 기기 시각');local.textContent=p.year+'.'+p.month+'.'+p.day+' '+p.hour+':'+p.minute+':'+p.second;const k=partsInZone(new Date(),'Asia/Seoul');document.getElementById('clockKst').textContent=zone==='Asia/Seoul'?'기기 시간대 자동 감지':('한국 KST '+k.month+'/'+k.day+' '+k.hour+':'+k.minute+':'+k.second);}
+
+  function todayString(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function dateText(date){if(!date)return '날짜 미정';const d=new Date(date+'T12:00:00');return `${d.getMonth()+1}월 ${d.getDate()}일 ${new Intl.DateTimeFormat('ko-KR',{weekday:'long'}).format(d)}`}
+  function setView(v){state.view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));render();if((v==='today'||v==='all')&&state.online)void refreshTasks(false);if(v==='trip')refreshLocalClock();window.scrollTo({top:0,behavior:'smooth'})}
+  function ownerFilter(v){state.owner=v;render()}
+  function queryFilter(v){const el=document.activeElement;const pos=el&&el.selectionStart!==null?el.selectionStart:v.length;state.query=v;render();const next=document.querySelector('.search');if(next){next.focus();next.setSelectionRange(pos,pos)}}
+  function renderHeader(){const n=state.tasks.length,completed=state.tasks.filter(t=>t.status==='완료').length,pct=n?Math.round(completed/n*100):0;document.getElementById('percent').textContent=pct+'%';document.getElementById('countLabel').textContent=completed+' / '+n;document.getElementById('progressDisc').style.setProperty('--p',pct+'%');const start=new Date('2026-11-07T00:00:00+09:00'),today=new Date();const remain=Math.ceil((start-today)/86400000);document.getElementById('countdown').textContent=remain>0?'D-'+remain:remain===0?'D-DAY':'여행 중';if(remain<0&&today>new Date('2026-11-17T23:59:59+09:00'))document.getElementById('countdown').textContent='여행 완료';document.getElementById('subcount').textContent=`남은 일 ${n-completed}개 · 완료 ${completed}개`}
+  function render(){renderHeader();const root=document.getElementById('main');if(state.view==='trip'){root.innerHTML=renderOfflineNotice()+renderTrip();return}if(state.view==='info'){root.innerHTML=renderOfflineNotice()+renderInfo();return}const content=state.view==='packing'?renderPacking():renderTasks();root.innerHTML=renderOfflineNotice()+'<div class="desktop-layout">'+content+renderSidebar()+'</div>';}
+  function renderTasks(){
+    const today=todayString();let list=state.tasks.filter(t=>state.owner==='전체'||t.owner===state.owner);
+    if(state.view==='today')list=list.filter(t=>t.due<=today);
+    if(state.query.trim()){const q=state.query.toLowerCase().trim();list=list.filter(t=>(t.title+' '+t.detail+' '+t.owner).toLowerCase().includes(q))}
+    const priority=t=>({'긴급':0,'높음':1,'보통':2}[t.priority]??3);
+    const sortTasks=(a,b)=>a.due.localeCompare(b.due)||priority(a)-priority(b);
+    let h=`<section class="section"><h2 class="section-title">${state.view==='today'?'지금 해야 할 일':'전체 준비 체크리스트'}</h2><div class="section-kicker">${state.view==='today'?'기한 지난 미완료 → 오늘 할 일 → 완료한 일 · 원래 마감일 유지':'날짜순 · 우선순위순 · 완료 여부 표시'}</div><div class="filters">${['전체','광현','진옥','함께'].map(x=>`<button class="chip ${x===state.owner?'active':''}" onclick="ownerFilter('${x}')">${x==='전체'?'전체 담당':x}</button>`).join('')}</div><input class="search" value="${esc(state.query)}" aria-label="할 일 검색" oninput="queryFilter(this.value)" placeholder="할 일 검색 (여권, 사막투어, 체크인...)"/><div class="tiny" style="margin:13px 2px 4px">${list.length}개 항목</div>`;
+    if(HAS_BACKEND&&!state.online&&!state.hasCache)return h+'<div class="task-sync-warning">Google Sheets 연결 또는 캐시가 없습니다. 온라인에서 한 번 동기화해 주세요.</div></section>';
+    if(state.view==='today'){
+      const groups=[
+        {title:'기한 지난 미완료',css:'overdue',items:list.filter(t=>t.due<today&&t.status!=='완료').sort(sortTasks),empty:'기한이 지난 미완료 항목이 없습니다.'},
+        {title:'오늘 할 일',css:'due-today',items:list.filter(t=>t.due===today&&t.status!=='완료').sort(sortTasks),empty:'오늘 마감인 미완료 항목이 없습니다.'},
+        {title:'완료한 일',css:'finished',items:list.filter(t=>t.status==='완료').sort(sortTasks),empty:'아직 완료한 항목이 없습니다.'}
+      ];
+      for(const g of groups){h+=`<div class="today-heading ${g.css}"><span>${g.title}</span><span class="number">${g.items.length}개</span></div>`;let current='';if(!g.items.length){h+=`<div class="today-empty">${g.empty}</div>`;continue}for(const t of g.items){if(t.due!==current){current=t.due;h+=`<div class="task-date"><h3>${esc(dateText(current))}</h3><small>${current<today?'원래 마감일':current===today?'오늘':'예정'}</small></div>`}h+=renderTaskRow(t)}}
+      return h+'</section>';
+    }
+    list.sort((a,b)=>a.due.localeCompare(b.due)||(a.status==='완료')-(b.status==='완료')||priority(a)-priority(b));
+    if(!list.length)return h+'<div class="empty">검색 결과가 없어요.</div></section>';
+    let current='';for(const t of list){if(t.due!==current){current=t.due;h+=`<div class="task-date"><h3>${esc(dateText(current))}</h3><small>${current<today?'기한 지남':current===today?'오늘':'예정'}</small></div>`}h+=renderTaskRow(t)}return h+'</section>';
+  }
+  function renderTaskRow(t){let label=t.priority==='긴급'?'urgent':t.priority==='높음'?'high':'';return `<article data-task-id="${esc(t.id)}" class="task-card ${t.status==='완료'?'is-done':''}"><input type="checkbox" class="check" aria-label="${esc(t.title)} 완료" ${t.status==='완료'?'checked':''} ${state.saving.has(t.id)||(!state.online&&!state.hasCache)?'disabled':''} onchange="toggleTask('${t.id}',this.checked)"/><div class="task-main" onclick="openDetail('${t.id}')"><p class="task-name">${esc(t.title)}</p><div class="task-meta"><span class="pill owner">${esc(t.owner)}</span><span class="pill ${label}">${esc(iconLabels[t.priority]||t.priority)}</span>${t.status==='진행 중'?'<span class="pill progress">진행 중</span>':''}</div></div><button class="more" onclick="openDetail('${t.id}')" aria-label="세부정보 보기">›</button></article>`}
+  function renderTrip(){return `<section class="section"><h2 class="section-title">여행 일정</h2><p class="section-kicker">현지시각과 한국시각(KST)을 함께 표시합니다 · 해당 지역의 오늘 날짜는 초록색 강조 · 미정 시간은 추정하지 않음</p><div class="itinerary-layout">${itinerary.map((t,i)=>{const d=t[0].split('/'),active=isCurrentItinerary(i);return `<article class="itinerary-card ${active?'is-today':''}"><div class="datebubble"><strong>${esc(d[1])}</strong><span>11월 ${esc(t[1])}</span></div><div style="flex:1">${active?'<span class="today-stamp">현재 날짜</span>':''}<span class="tiny">${esc(t[2])}</span><h3>${esc(t[3])}</h3><p>${esc(t[4])}</p>${itineraryClock(i)}${t[5]?`<em>${esc(t[5])}</em>`:''}</div></article>`}).join('')}</div></section>`}
+  function renderInfo(){return state.pwaMeta?.infoHtml||'<section class="section"><h2 class="section-title">예약 정보</h2><p class="section-kicker">처음 온라인 동기화하면 이 기기에 안전하게 저장됩니다.</p></section>'}
+  function showToast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.remove('hide');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.add('hide'),2800)}
+
+  // Cross-origin bridge: Google identity is never copied into public files or device state.
+  const PWA_GAS_URL='https://script.google.com/macros/s/AKfycbxsYQaSRXp0cLl_uHr-gdMPyvMH1XIi1Ht2GO28j2CaWghQV_GU2Cw08ESrryovOasZtw/exec';
+  const PWA_HOST_ORIGIN='https://s00360209-00067.github.io';
+  const bridgeState={ready:false,target:null,origin:null,nextId:1,pending:new Map(),frame:null,loginNeeded:false};
+  function bridgeOriginValid(origin){try{const url=new URL(origin);return url.protocol==='https:' && (url.hostname==='script.googleusercontent.com'||url.hostname.endsWith('-script.googleusercontent.com'))}catch(e){return false}}
+  function initPwaBridge(){
+    if(bridgeState.frame || !navigator.onLine)return;
+    const el=document.createElement('iframe');
+    el.id='trustedSyncFrame';el.title='Google Sheets 인증 동기화';el.style.cssText='position:absolute;width:1px;height:1px;top:-1000px;left:-1000px;border:0;opacity:0';
+    el.src=PWA_GAS_URL+'?mode=pwa_bridge';document.body.appendChild(el);bridgeState.frame=el;
+  }
+  function showPwaAuthHint(){if(bridgeState.ready || navigator.onLine===false)return;let el=document.getElementById('pwaAuthHint');if(el)el.classList.remove('hide')}
+  window.addEventListener('message',event=>{
+    const d=event.data;
+    if(!bridgeOriginValid(event.origin)||!d||d.source!=='HONEYMOON_PWA_BRIDGE_V1')return;
+    if(d.type==='ready'){
+      bridgeState.ready=true;bridgeState.target=event.source;bridgeState.origin=event.origin;
+      document.getElementById('pwaAuthHint')?.classList.add('hide');
+      for(const p of bridgeState.pending.values())if(!p.sent){p.sent=true;bridgeState.target.postMessage({source:'HONEYMOON_PWA_CLIENT_V1',requestId:p.requestId,method:p.method,payload:p.payload},bridgeState.origin)}
+    }else if(d.type==='result'||d.type==='error'){
+      const p=bridgeState.pending.get(d.requestId);if(!p)return;
+      bridgeState.pending.delete(d.requestId);clearTimeout(p.timer);
+      if(d.type==='error')p.reject(new Error(d.error||'시트 통신 오류'));else p.resolve(d.result);
+    }
+  });
+  function pwaBridgeCall(method,payload){
+    if(!navigator.onLine)return Promise.reject(new Error('offline'));
+    initPwaBridge();
+    return new Promise((resolve,reject)=>{
+      const requestId='r'+(bridgeState.nextId++);
+      const timer=setTimeout(()=>{bridgeState.pending.delete(requestId);showPwaAuthHint();reject(new Error('Google 인증 동기화 연결 시간 초과'))},18000);
+      const q={requestId,method,payload,resolve,reject,timer,sent:false};bridgeState.pending.set(requestId,q);
+      if(bridgeState.ready&&bridgeState.target){q.sent=true;bridgeState.target.postMessage({source:'HONEYMOON_PWA_CLIENT_V1',requestId,method,payload},bridgeState.origin)}
+    });
+  }
+
+  function callBackend(method,payload){return pwaBridgeCall(method,payload)}
+  const OFFLINE_CACHE_KEY='honeymoon_cache_2026_v1',OFFLINE_QUEUE_KEY='honeymoon_queue_2026_v1';
+  function safeLocalRead(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
+  function safeLocalWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){return false}}
+  function saveSnapshot(){
+    const okay=safeLocalWrite(OFFLINE_CACHE_KEY,{tasks:state.tasks,packing:state.packing,packingArchive:state.packingArchive,pwaMeta:state.pwaMeta,at:Date.now()});
+    if(okay)state.hasCache=true;
+  }
+  function loadOfflineSnapshot(){
+    if(!HAS_BACKEND)return;
+    const cache=safeLocalRead(OFFLINE_CACHE_KEY);
+    if(cache&&Array.isArray(cache.tasks)&&Array.isArray(cache.packing)){
+      state.tasks=cache.tasks;state.packing=cache.packing;state.packingArchive=cache.packingArchive||[];state.pwaMeta=cache.pwaMeta||null;if(state.pwaMeta?.itinerary){itinerary=state.pwaMeta.itinerary;FLIGHTS=state.pwaMeta.flights||{};ITINERARY_ZONES=state.pwaMeta.zones||[];ITINERARY_END_DATES=state.pwaMeta.endDates||{}}state.hasCache=true;
+    }
+    const queue=safeLocalRead(OFFLINE_QUEUE_KEY);
+    state.pending=Array.isArray(queue)?queue.filter(q=>['task','packing'].includes(q.kind)&&typeof q.id==='string').slice(0,500):[];
+    applyPendingLocal();
+  }
+  function applyPendingLocal(){for(const q of state.pending){const entry=(q.kind==='task'?state.tasks:state.packing).find(x=>x.id===q.id);if(entry)entry[q.field]=q.value}}
+  function setOfflineStatus(){
+    const count=state.pending.length;
+    if(count){statusBanner('demo','동기화 대기 '+count+'건',navigator.onLine===false?'오프라인 · 기기에 보관됨':'연결 확인 후 자동 동기화');return}
+    if(!state.online){statusBanner('demo',state.hasCache?'오프라인 데이터 사용 중':'시트 연결 확인 중',state.hasCache?'최근 동기화 데이터 표시':'인터넷 연결 필요')}
+    else statusBanner('live','공동 시트 연결됨',state.lastSync?'동기화 '+state.lastSync.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):'대기 변경 없음');
+  }
+  function renderOfflineNotice(){
+    if(!HAS_BACKEND)return '';
+    const conflicts=state.pending.filter(q=>q.conflict),unresolved=state.pending.length;
+    if(!unresolved&&!(!state.online&&state.hasCache))return '';
+    let h=`<div class="offline-alert"><strong>${unresolved?`기기 저장 변경 ${unresolved}건 · ${conflicts.length?'충돌 확인 필요':'인터넷 연결 시 자동 동기화'}`:'저장된 체크리스트를 오프라인으로 표시 중'}</strong><div>설치한 앱을 종료했다 다시 열어도 이 기기에 저장된 내용을 볼 수 있습니다. 새로 열기/새로고침은 인터넷이 필요할 수 있습니다.</div>`;
+    if(navigator.onLine!==false&&unresolved)h+='<button onclick="syncPending()">지금 동기화</button>';
+    if(conflicts.length)for(const q of conflicts){const v=state.tasks.find(t=>t.id===q.id)||state.packing.find(t=>t.id===q.id);h+=`<div style="margin-top:9px">동기화 충돌: ${esc(v?.title||q.id)} <button onclick="resolveOfflineConflict('${q.kind}','${q.id}',false)">시트 내용 사용</button><button onclick="resolveOfflineConflict('${q.kind}','${q.id}',true)">내 변경 적용</button></div>`}
+    return h+'</div>';
+  }
+  function isOfflineFailure(e){return navigator.onLine===false||/network|connection|offline|timed out|timeout|fetch|unavailable|연결|통신/i.test(String(e?.message||e))}
+  function queueOfflineChange(kind,id,field,value,base){
+    if(!state.hasCache){showToast('이 기기에는 오프라인 데이터가 없습니다. 인터넷 연결 후 열어 주세요.');return false}
+    const old=state.pending.find(q=>q.kind===kind&&q.id===id&&q.field===field);
+    const next=state.pending.filter(q=>!(q.kind===kind&&q.id===id&&q.field===field));
+    const origin=old?old.base:base;
+    if(value!==origin)next.push({kind,id,field,value,base:origin,at:Date.now()});
+    if(!safeLocalWrite(OFFLINE_QUEUE_KEY,next)){showToast('기기 저장 공간에 접근할 수 없어 오프라인 변경을 저장하지 못했습니다.');return false}
+    state.pending=next;const entry=(kind==='task'?state.tasks:state.packing).find(x=>x.id===id);
+    if(entry)entry[field]=value;
+    saveSnapshot();setOfflineStatus();render();showToast(next.length?'오프라인 변경을 기기에 저장했습니다.':'변경을 원래대로 되돌렸습니다.');return true;
+  }
+  async function syncPending(){
+    if(!HAS_BACKEND||!state.pending.length||state.syncingOffline||navigator.onLine===false||state.loading||state.packingLoading)return;
+    state.syncingOffline=true;setOfflineStatus();
+    try{
+      const [tasksResult,packingResult]=await Promise.all([callBackend('getTasks'),callBackend('getPackingItems')]);
+      if(!Array.isArray(tasksResult?.tasks)||!Array.isArray(packingResult?.items))throw new Error('시트 상태 조회 실패');
+      const remoteTasks=new Map(tasksResult.tasks.map(x=>[x.id,x]));
+      const remotePacking=new Map(packingResult.items.map(x=>[x.id,x]));
+      let synced=0;
+      for(const q of [...state.pending]){
+        if(q.conflict)continue;
+        const remote=(q.kind==='task'?remoteTasks:remotePacking).get(q.id);
+        if(!remote){q.conflict=true;q.remoteValue='(항목 없음)';continue}
+        if(remote[q.field]===q.value){state.pending=state.pending.filter(x=>x!==q);synced++;continue}
+        if(remote[q.field]!==q.base){q.conflict=true;q.remoteValue=remote[q.field];continue}
+        state.saving.add(q.id);state.packingSaving.add(q.id);
+        try{
+          const result=q.kind==='task'?
+            await callBackend('setTaskStatus',{id:q.id,status:q.value,expectedVersion:remote.version}):
+            await callBackend('setPackingItem',{id:q.id,field:q.field,value:q.value,expectedVersion:remote.version});
+          if(!result||!result.version)throw new Error('저장 응답 오류');
+          const target=(q.kind==='task'?state.tasks:state.packing).find(t=>t.id===q.id);
+          if(target)Object.assign(target,result);
+          Object.assign(remote,result);
+          state.pending=state.pending.filter(x=>x!==q);synced++;
+        }catch(e){if(!isOfflineFailure(e)){q.conflict=true;q.remoteValue=remote[q.field]}else break}
+        finally{state.saving.delete(q.id);state.packingSaving.delete(q.id)}
+        safeLocalWrite(OFFLINE_QUEUE_KEY,state.pending);saveSnapshot();
+      }
+      safeLocalWrite(OFFLINE_QUEUE_KEY,state.pending);saveSnapshot();
+      if(synced)showToast('오프라인 변경 '+synced+'건을 시트에 동기화했습니다.');
+      if(state.pending.some(q=>q.conflict))showToast('일부 항목이 다른 기기에서 변경됐습니다. 충돌을 확인해 주세요.');
+    }catch(e){setOfflineStatus();console.warn('Deferred sync',e?.message||e)}
+    finally{state.syncingOffline=false;setOfflineStatus();render()}
+  }
+  function resolveOfflineConflict(kind,id,keepLocal){
+    const q=state.pending.find(x=>x.kind===kind&&x.id===id&&x.conflict);if(!q)return;
+    if(keepLocal){q.base=q.remoteValue;q.conflict=false;delete q.remoteValue}
+    else{const entry=(kind==='task'?state.tasks:state.packing).find(x=>x.id===id);if(entry)entry[q.field]=q.remoteValue;state.pending=state.pending.filter(x=>x!==q)}
+    safeLocalWrite(OFFLINE_QUEUE_KEY,state.pending);saveSnapshot();render();if(keepLocal)void syncPending();else void refreshAll();
+  }
+  function statusBanner(mode,label,subtitle){const dot=document.getElementById('statusDot');dot.className='dot '+(mode==='demo'?'demo':mode==='bad'?'bad':'');document.getElementById('syncTitle').textContent=label;document.getElementById('syncTime').textContent=subtitle;document.getElementById('demoNotice').classList.toggle('hide',mode!=='demo'&&mode!=='bad')}
+  async function refreshTasks(userTriggered=false){if(!HAS_BACKEND){if(userTriggered)showToast('이 파일은 미리보기입니다. 웹 앱 배포 후 자동 동기화됩니다.');return}if(state.loading||state.saving.size>0)return;state.loading=true;if(userTriggered||!state.online)statusBanner('live','시트와 동기화 중','Google Sheets 데이터 확인 중');try{const result=await callBackend('getTasks');if(!result||!Array.isArray(result.tasks))throw new Error('예상하지 못한 시트 응답');state.tasks=result.tasks;state.remoteTasks=result.tasks.map(x=>({...x}));state.online=true;state.lastSync=new Date();applyPendingLocal();saveSnapshot();statusBanner('live','공동 시트 연결됨','동기화 '+state.lastSync.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));if(state.pending.length)setOfflineStatus();render();if(userTriggered)showToast('최신 데이터로 동기화했습니다.')}catch(e){state.online=false;if(state.hasCache){setOfflineStatus();render()}else statusBanner('bad','연결 실패',e.message);if(userTriggered)showToast('시트 연결을 확인해 주세요.')}finally{state.loading=false}}
+  function paintTaskCard(id){
+    const t=state.tasks.find(x=>x.id===id);
+    const el=[...document.querySelectorAll('[data-task-id]')].find(x=>x.dataset.taskId===id);
+    if(!t||!el)return;
+    el.classList.toggle('is-done',t.status==='완료');
+    if(state.saving.has(id))el.setAttribute('aria-busy','true');else el.removeAttribute('aria-busy');
+    const input=el.querySelector('input.check');if(input){input.checked=t.status==='완료';input.disabled=state.saving.has(id)||(!state.online&&!state.hasCache);}
+    renderHeader();
+  }
+  async function updateStatus(id,status){
+    const t=state.tasks.find(x=>x.id===id);if(!t||state.saving.has(id))return;
+    if(!HAS_BACKEND){showToast('미리보기에서는 저장할 수 없습니다.');render();return;}if(!state.online||navigator.onLine===false){const ok=queueOfflineChange('task',id,'status',status,t.status);if(!ok)render();return;}
+    const previous={status:t.status,version:t.version};const started=performance.now();
+    state.saving.add(id);t.status=status;paintTaskCard(id);renderHeader();
+    try{
+      const result=await callBackend('setTaskStatus',{id,status,expectedVersion:previous.version});
+      if(result?.id!==id||result?.status!==status||!result?.version)throw new Error('서버 저장 응답을 확인할 수 없습니다.');
+      Object.assign(t,{status:result.status,version:result.version,updatedAt:result.updatedAt,updatedBy:result.updatedBy});
+      state.lastSync=new Date();saveSnapshot();
+      const seconds=((performance.now()-started)/1000).toFixed(1);
+      showToast('Google Sheets 저장 완료 · '+seconds+'초');
+      // 서버 응답이 저장 성공을 확인했으므로 시트 전체를 즉시 재조회하지 않습니다.
+      // 다른 기기에서 변경한 내용은 탭 전환·25초 주기 동기화로 갱신합니다.
+    }catch(e){t.status=previous.status;t.version=previous.version;if(isOfflineFailure(e)){state.online=false;queueOfflineChange('task',id,'status',status,previous.status)}else showToast('저장 실패: '+e.message);}
+    finally{state.saving.delete(id);paintTaskCard(id);renderHeader();}
+  }
+  function toggleTask(id,checked){updateStatus(id,checked?'완료':'미시작')}
+  function openDetail(id){const t=state.tasks.find(x=>x.id===id);if(!t)return;const wrap=document.getElementById('modalRoot');wrap.className='overlay';wrap.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-label="할 일 상세"><div class="modal-top"><span class="pill owner">${esc(t.owner)} 담당</span><button class="close" onclick="closeDetail()" aria-label="닫기">×</button></div><h2>${esc(t.title)}</h2><div class="task-meta"><span class="pill">${esc(dateText(t.due))}</span><span class="pill">${esc(t.priority)}</span><span class="pill">${esc(t.phase)}</span></div><p>${esc(t.detail||'추가 설명 없음')}</p>${t.link&&/^https:\/\//.test(t.link)?`<a class="link" target="_blank" rel="noopener" href="${esc(t.link)}">관련 페이지 열기 ↗</a>`:''}<p class="tiny">마지막 수정: ${esc(t.updatedAt||'없음')} ${esc(t.updatedBy||'')}</p><div class="actionrow">${['미시작','진행 중','완료'].map(x=>`<button onclick="detailChange('${t.id}','${x}')" class="${t.status===x?'active':''}">${x}</button>`).join('')}</div></div>`;wrap.addEventListener('click',e=>{if(e.target===wrap)closeDetail()},{once:true})}
+  function detailChange(id,status){closeDetail();updateStatus(id,status)}
+  function closeDetail(){const wrap=document.getElementById('modalRoot');wrap.className='hide';wrap.innerHTML=''}
+
+  const BAGS=['기내용 ①','기내용 ②','위탁 ①','백팩'];
+  function packingOwnerFilter(v){state.packingOwner=v;render()}
+  function packingBagFilter(v){state.packingBag=v;render()}
+  function packingQueryFilter(v){const el=document.activeElement;const pos=el&&el.selectionStart!==null?el.selectionStart:v.length;state.packingQuery=v;render();const next=document.getElementById('packingSearch');if(next&&v){next.focus();next.setSelectionRange(pos,pos)}}
+  function renderSidebar(){
+    const tasks=state.tasks, total=tasks.length, finished=tasks.filter(t=>t.status==='완료').length;
+    const items=state.packing, packed=items.filter(x=>x.packed).length;
+    const pending=tasks.filter(t=>t.status!=='완료').sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
+    return `<aside class="desktop-sidebar" aria-label="대시보드 통계"><div class="dashboard-tile"><h3>전체 준비 진행률</h3><strong>${finished} / ${total}</strong><p>일정·예약 준비 완료</p><div class="bag-meter"><span style="width:${total?finished/total*100:0}%"></span></div></div>
+      <div class="dashboard-tile"><h3>짐 챙기기 진행률</h3><strong>${packed} / ${items.length}</strong><p>4개 가방에 분류된 준비물</p><div class="bag-meter"><span style="width:${items.length?packed/items.length*100:0}%"></span></div><button class="chip" style="margin-top:12px" onclick="setView('packing')">짐 목록 보기</button></div>
+      <div class="dashboard-tile"><h3>담당자별 남은 일</h3>${['광현','진옥','함께'].map(o=>`<div class="sidebar-mini"><span>${o}</span><b>${tasks.filter(t=>t.owner===o&&t.status!=='완료').length}개</b></div>`).join('')}</div>
+      <div class="dashboard-tile"><h3>가장 가까운 일정</h3>${pending.map(t=>`<div class="sidebar-mini"><span style="max-width:185px">${esc(t.title)}</span><b>${esc(t.due.slice(5))}</b></div>`).join('')}</div></aside>`;
+  }
+  function renderPacking(){
+    const pack=state.packing, done=pack.filter(x=>x.packed).length;
+    let cards=BAGS.map(b=>{let list=pack.filter(x=>x.bag===b),n=list.filter(x=>x.packed).length;return `<button class="bag-card ${state.packingBag===b?'selected':''}" onclick="packingBagFilter('${b}')"><strong>${esc(b)}</strong><span class="tiny">${n}/${list.length}개 완료</span><div class="bag-meter"><span style="width:${list.length?n/list.length*100:0}%"></span></div></button>`}).join('');
+    let list=pack.filter(x=>(state.packingOwner==='전체'||x.owner===state.packingOwner)&&(state.packingBag==='전체'||x.bag===state.packingBag));
+    const q=state.packingQuery.toLowerCase().trim();if(q)list=list.filter(x=>(x.title+' '+x.category+' '+x.note).toLowerCase().includes(q));
+    list.sort((a,b)=>a.packed-b.packed||a.category.localeCompare(b.category,'ko')||a.id.localeCompare(b.id));
+    let cats=[...new Set(list.map(x=>x.category))];
+    return `<section class="section"><div class="pack-headerbar"><h2 class="section-title">짐 챙기기</h2><button class="pack-primary" onclick="openPackingForm()">+ 준비물 추가</button></div><p class="section-kicker">물건별 추가·수정·삭제·복원 · Google Sheets에 공동 저장</p><div class="packing-summary">${cards}</div>
+      <div class="filters"><button class="chip ${state.packingBag==='전체'?'active':''}" onclick="packingBagFilter('전체')">가방 전체</button>${BAGS.map(b=>`<button class="chip ${state.packingBag===b?'active':''}" onclick="packingBagFilter('${b}')">${esc(b)}</button>`).join('')}</div>
+      <div class="filters" style="margin-top:8px">${['전체','광현','진옥','함께'].map(o=>`<button class="chip ${state.packingOwner===o?'active':''}" onclick="packingOwnerFilter('${o}')">${o==='전체'?'모든 담당':o}</button>`).join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:10px"><input id="packingSearch" class="search" style="margin:0" placeholder="준비물 검색 (충전기, 수영복...)" value="${esc(state.packingQuery)}" oninput="packingQueryFilter(this.value)"/><button class="chip" onclick="packingQueryFilter('');document.getElementById('packingSearch').value=''">초기화</button></div>
+      <div class="packing-count">전체 ${pack.length}개 · 챙김 ${done}개 · 현재 필터 ${list.length}개</div>
+      ${!list.length?'<div class="empty">조건에 맞는 준비물이 없습니다.</div>':cats.map(cat=>`<div class="task-date"><h3>${esc(cat)}</h3><small>${list.filter(x=>x.category===cat&&!x.packed).length}개 남음</small></div><div class="pack-list">${list.filter(x=>x.category===cat).map(x=>`<article data-pack-id="${esc(x.id)}" class="pack-card ${x.packed?'is-done':''}"><input class="check" type="checkbox" aria-label="${esc(x.title)} 챙김" ${x.packed?'checked':''} ${state.packingSaving.has(x.id)?'disabled':''} onchange="changePacking('${x.id}','packed',this.checked)"/><div class="task-main"><div class="pack-title">${esc(x.title)}</div><div class="pack-meta"><span class="pill owner">${esc(x.owner)}</span><span class="pill">수량 ${x.qty}</span>${x.note?`<span class="tiny">${esc(x.note)}</span>`:''}</div></div><div class="pack-right"><select aria-label="${esc(x.title)} 가방" class="bag-select" ${state.packingSaving.has(x.id)?'disabled':''} onchange="changePacking('${x.id}','bag',this.value)">${BAGS.map(b=>`<option ${x.bag===b?'selected':''} value="${esc(b)}">${esc(b)}</option>`).join('')}</select><button class="pack-edit" onclick="openPackingForm('${x.id}')" aria-label="${esc(x.title)} 수정">수정</button></div></article>`).join('')}</div>`).join('')}
+      <div style="padding:16px 0 4px"><button class="pack-archive-link" onclick="togglePackingArchive()">${state.packingShowArchive?'삭제된 물품 접기':'삭제된 물품 보기'} (${state.packingArchive.length})</button></div>
+      ${state.packingShowArchive ? (!state.packingArchive.length?'<div class="tiny">삭제된 물품이 없습니다.</div>':state.packingArchive.map(x=>`<article class="pack-archived-card"><div><strong>${esc(x.title)}</strong><div class="tiny">${esc(x.category)} · ${esc(x.owner)} · ${esc(x.bag)}</div></div><button class="pack-edit" onclick="restorePacking('${x.id}')">복원</button></article>`).join('')) : ''}
+      <p class="tiny" style="padding:22px 0 60px;line-height:1.65">기내용·위탁 수하물 개수는 실제 항공사 및 TMA 허용량 확인이 필요합니다. 예비 배터리·보조배터리는 위탁수하물에 넣지 마세요.</p></section>`;
+  }
+  async function refreshPacking(){
+    if(!HAS_BACKEND||state.packingLoading||state.packingSaving.size>0)return;
+    state.packingLoading=true;
+    try{const r=await callBackend('getPackingItems');if(!Array.isArray(r?.items))throw new Error('준비물 응답 오류');state.packing=r.items;state.remotePacking=r.items.map(x=>({...x}));state.packingArchive=Array.isArray(r.archived)?r.archived:[];applyPendingLocal();saveSnapshot();render();}
+    catch(e){console.warn('Packing load failed',e);showToast('준비물 동기화 실패: '+e.message)}
+    finally{state.packingLoading=false}
+  }
+  function paintPackingCard(id){
+    const item=state.packing.find(x=>x.id===id);
+    const el=[...document.querySelectorAll('[data-pack-id]')].find(x=>x.dataset.packId===id);
+    if(!item||!el)return;
+    el.classList.toggle('is-done',item.packed);
+    if(state.packingSaving.has(id))el.setAttribute('aria-busy','true');else el.removeAttribute('aria-busy');
+    const check=el.querySelector('input.check');if(check){check.checked=item.packed;check.disabled=state.packingSaving.has(id);}
+    const bag=el.querySelector('select.bag-select');if(bag){bag.value=item.bag;bag.disabled=state.packingSaving.has(id);}
+  }
+  async function changePacking(id,field,value){
+    const x=state.packing.find(p=>p.id===id);if(!x||state.packingSaving.has(id))return;
+    if(!HAS_BACKEND){showToast('미리보기에서는 저장할 수 없습니다.');render();return}if(!state.online||navigator.onLine===false){const ok=queueOfflineChange('packing',id,field,value,x[field]);if(!ok)render();return}
+    const old={bag:x.bag,packed:x.packed,version:x.version};const started=performance.now();
+    state.packingSaving.add(id);x[field]=value;paintPackingCard(id);
+    try{
+      const r=await callBackend('setPackingItem',{id,field,value,expectedVersion:old.version});
+      if(!r||r.id!==id||!r.version)throw new Error('시트 저장 응답을 확인할 수 없습니다.');
+      Object.assign(x,r);saveSnapshot();
+      showToast('준비물 저장 완료 · '+((performance.now()-started)/1000).toFixed(1)+'초');
+    }catch(e){Object.assign(x,old);if(isOfflineFailure(e)){state.online=false;queueOfflineChange('packing',id,field,value,old[field])}else{showToast('저장 실패: '+e.message);setTimeout(()=>refreshPacking(),300)}}
+    finally{state.packingSaving.delete(id);paintPackingCard(id);renderHeader();}
+  }
+
+  function togglePackingArchive(){state.packingShowArchive=!state.packingShowArchive;render()}
+  function openPackingForm(id){
+    const item=id?state.packing.find(x=>x.id===id):null;
+    if(id&&!item){showToast('항목을 찾을 수 없습니다. 새로고침해 주세요.');return}
+    const categories=[...new Set(['여행서류','의류','세면·위생','건강·안전','전자·촬영','바다·스노클링','웨딩·소품','여행용품','기타',...state.packing.map(x=>x.category)].filter(Boolean))];
+    const wrap=document.getElementById('modalRoot');wrap.className='overlay pack-modal';
+    wrap.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-label="준비물 ${item?'수정':'추가'}"><div class="modal-top"><h2>${item?'준비물 수정':'새 준비물 추가'}</h2><button class="close" onclick="closeDetail()" aria-label="닫기">×</button></div>
+      <form id="packingForm" onsubmit="savePackingForm(event)">
+        <div class="pack-form">
+          <label class="pack-field full">물품명 <input name="title" required maxlength="120" placeholder="예: 휴대용 손거울" value="${esc(item?.title||'')}" /></label>
+          <label class="pack-field">분류 <input name="category" required maxlength="60" list="packCategoryOptions" placeholder="분류 선택 또는 직접 입력" value="${esc(item?.category||'여행용품')}"/><datalist id="packCategoryOptions">${categories.map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist></label>
+          <label class="pack-field">담당자 <select name="owner">${['광현','진옥','함께'].map(x=>`<option ${x===(item?.owner||'함께')?'selected':''}>${x}</option>`).join('')}</select></label>
+          <label class="pack-field">수량 <input name="qty" type="number" min="1" max="999" required value="${item?.qty||1}" /></label>
+          <label class="pack-field">넣을 가방 <select name="bag">${BAGS.map(x=>`<option ${x===(item?.bag||'위탁 ①')?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
+          <label class="pack-field full">메모 (선택) <textarea name="note" maxlength="400" rows="2" placeholder="준비할 때 참고할 내용">${esc(item?.note||'')}</textarea></label>
+        </div>
+        <div class="actionrow"><button type="submit" class="pack-action" id="packSaveBtn">${item?'변경 저장':'준비물 추가'}</button><button type="button" onclick="closeDetail()">취소</button>${item?`<button type="button" class="pack-danger" onclick="archivePacking('${item.id}')">삭제</button>`:''}</div>
+      </form></div>`;
+    wrap.dataset.packingId=item?.id||'';
+    wrap.dataset.version=item?.version||'';
+    wrap.addEventListener('click',e=>{if(e.target===wrap)closeDetail()},{once:true});
+    setTimeout(()=>wrap.querySelector('[name=title]')?.focus(),10);
+  }
+  async function savePackingForm(event){
+    event.preventDefault();
+    const wrap=document.getElementById('modalRoot');
+    if(state.packingMutating)return;
+    const form=document.getElementById('packingForm');
+    if(!form?.reportValidity())return;
+    const fields=new FormData(form);
+    const payload={title:String(fields.get('title')||'').trim(),category:String(fields.get('category')||'').trim(),
+      owner:String(fields.get('owner')||''),qty:Number(fields.get('qty')),bag:String(fields.get('bag')||''),note:String(fields.get('note')||'').trim()};
+    if(!payload.title||!payload.category||!Number.isInteger(payload.qty)||payload.qty<1||payload.qty>999){showToast('물품명, 분류, 수량을 확인해 주세요.');return}
+    if(!HAS_BACKEND||!state.online){showToast('물품 추가·수정은 온라인에서만 가능합니다. 체크 및 가방 변경은 오프라인에 보관됩니다.');return}
+    const id=wrap.dataset.packingId;
+    const method=id?'editPackingItem':'addPackingItem';
+    if(id){payload.id=id;payload.expectedVersion=wrap.dataset.version;}
+    state.packingMutating=true;
+    const save=form.querySelector('#packSaveBtn');save.disabled=true;save.textContent='저장 중…';
+    try{await callBackend(method,payload);closeDetail();await refreshPacking();showToast(id?'준비물을 수정했습니다.':'준비물을 추가했습니다.');}
+    catch(e){showToast('저장 실패: '+e.message);save.disabled=false;save.textContent=id?'변경 저장':'준비물 추가';}
+    finally{state.packingMutating=false}
+  }
+  async function archivePacking(id){
+    if(state.packingMutating||!HAS_BACKEND||!state.online)return;
+    const item=state.packing.find(x=>x.id===id);
+    if(!item)return;
+    if(!window.confirm(`「${item.title}」 항목을 삭제하시겠습니까?\n삭제 후에도 ‘삭제된 물품 보기’에서 복원할 수 있습니다.`))return;
+    state.packingMutating=true;
+    try{await callBackend('archivePackingItem',{id,expectedVersion:item.version});closeDetail();await refreshPacking();showToast('삭제했습니다. 필요하면 복원할 수 있습니다.');}
+    catch(e){showToast('삭제 실패: '+e.message);await refreshPacking();}
+    finally{state.packingMutating=false;}
+  }
+  async function restorePacking(id){
+    if(state.packingMutating||!HAS_BACKEND||!state.online)return;
+    const item=state.packingArchive.find(x=>x.id===id);if(!item)return;
+    state.packingMutating=true;
+    try{await callBackend('restorePackingItem',{id,expectedVersion:item.version});await refreshPacking();showToast('준비물을 복원했습니다.');}
+    catch(e){showToast('복원 실패: '+e.message);await refreshPacking();}
+    finally{state.packingMutating=false;}
+  }
+
+  async function refreshAll(force=false){
+    if(navigator.onLine===false){state.online=false;setOfflineStatus();render();return}
+    initPwaBridge();
+    await Promise.all([refreshTasks(force),refreshPacking(),callBackend('getPwaMeta').then(meta=>{
+      if(meta&&Array.isArray(meta.itinerary)){state.pwaMeta=meta;itinerary=meta.itinerary;FLIGHTS=meta.flights||{};ITINERARY_ZONES=meta.zones||[];ITINERARY_END_DATES=meta.endDates||{};saveSnapshot();render()}
+    }).catch(e=>console.warn('itinerary not yet synced',e.message))]);
+    if(state.online&&state.pending.length)void syncPending();
+  }
+
+  function init(){
+    initPwaBridge();
+    if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
+    refreshLocalClock();setInterval(refreshLocalClock,1000);
+    window.addEventListener('online',()=>{refreshLocalClock();void refreshAll()});window.addEventListener('offline',()=>{refreshLocalClock();state.online=false;setOfflineStatus();render()});
+    if(HAS_BACKEND)loadOfflineSnapshot();
+    if(!HAS_BACKEND){state.tasks=[];statusBanner('bad','Google Sheets 연결 불가','이 화면에서는 완료 체크를 저장할 수 없습니다.');}
+    else {setOfflineStatus();void refreshAll();}
+    render();
+    if(HAS_BACKEND){setInterval(()=>{if(!document.hidden)refreshAll()},25000);document.addEventListener('visibilitychange',()=>{refreshLocalClock();if(!document.hidden)refreshAll()});}
+  }
+  document.addEventListener('DOMContentLoaded',init);
+  if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('SW registration',e.message)))}
+</script>
+</body>
+</html>
