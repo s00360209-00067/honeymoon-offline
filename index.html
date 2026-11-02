@@ -8,7 +8,7 @@
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>우리 둘의 신혼여행 | 체크리스트</title>
+  <title>개인 여행 체크리스트</title>
   <style>
     :root {--teal:#087d82;--dark:#083d48;--ink:#18333f;--muted:#748592;--bg:#f5f8fa;--border:#e5edf0;--white:#fff;--coral:#f3a16b;--red:#c75055;--shadow:0 10px 28px rgba(13,60,72,.06)}
     *{box-sizing:border-box}html{font-family:ui-sans-serif,system-ui,-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
@@ -112,9 +112,9 @@
 <div id="pwaAuthHint" class="hide" style="position:fixed;z-index:70;top:8px;left:8px;right:8px;max-width:530px;margin:auto;background:#fff7e6;color:#6b4c19;border:1px solid #e7c47c;padding:13px;border-radius:13px;font-size:12px;box-shadow:0 8px 25px #0002">Google 인증 연결이 되지 않았습니다. 인터넷 연결 상태에서 <a href="https://script.google.com/macros/s/AKfycbxsYQaSRXp0cLl_uHr-gdMPyvMH1XIi1Ht2GO28j2CaWghQV_GU2Cw08ESrryovOasZtw/exec" target="_blank" rel="noopener">기존 웹앱에 로그인</a>하거나 <button onclick="connectPwaPopup()">Google 계정 연결</button>을 눌러 주세요. 오프라인에 저장된 항목은 계속 사용할 수 있습니다. <button onclick="document.getElementById('pwaAuthHint').classList.add('hide')">닫기</button></div>
 <div class="app">
   <header class="hero">
-    <div class="eyebrow">MALDIVES · ABU DHABI · 2026</div>
-    <h1>우리 둘의 신혼여행</h1>
-    <div class="subline">앱을 연결하면 개인 일정이 표시됩니다</div>
+    <div class="eyebrow">OFFLINE · PRIVATE · CHECKLIST</div>
+    <h1>공동 여행 체크리스트</h1>
+    <div class="subline" id="tripSubline">Google 계정 연결 후 일정 표시</div>
     <div class="travel-clock" id="liveClock" role="timer" aria-live="off"><div><div class="clock-label" id="clockZoneLabel">현재 기기 지역 시각</div><div class="clock-time" id="clockLocal">--:--:--</div></div><div class="clock-aux" id="clockKst">한국시각 확인 중</div></div>
     <div class="hero-row">
       <div class="hero-stat"><small id="countdownLabel">여행 시작까지</small><strong id="countdown">—</strong><small id="subcount">오늘 할 일부터 하나씩</small></div>
@@ -166,7 +166,23 @@
   function setView(v){state.view=v;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===v));render();if((v==='today'||v==='all')&&state.online)void refreshTasks(false);if(v==='trip')refreshLocalClock();window.scrollTo({top:0,behavior:'smooth'})}
   function ownerFilter(v){state.owner=v;render()}
   function queryFilter(v){const el=document.activeElement;const pos=el&&el.selectionStart!==null?el.selectionStart:v.length;state.query=v;render();const next=document.querySelector('.search');if(next){next.focus();next.setSelectionRange(pos,pos)}}
-  function renderHeader(){const n=state.tasks.length,completed=state.tasks.filter(t=>t.status==='완료').length,pct=n?Math.round(completed/n*100):0;document.getElementById('percent').textContent=pct+'%';document.getElementById('countLabel').textContent=completed+' / '+n;document.getElementById('progressDisc').style.setProperty('--p',pct+'%');const start=new Date('2026-11-07T00:00:00+09:00'),today=new Date();const remain=Math.ceil((start-today)/86400000);document.getElementById('countdown').textContent=remain>0?'D-'+remain:remain===0?'D-DAY':'여행 중';if(remain<0&&today>new Date('2026-11-17T23:59:59+09:00'))document.getElementById('countdown').textContent='여행 완료';document.getElementById('subcount').textContent=`남은 일 ${n-completed}개 · 완료 ${completed}개`}
+  function renderHeader(){
+    const n=state.tasks.length,completed=state.tasks.filter(t=>t.status==='완료').length,pct=n?Math.round(completed/n*100):0;
+    document.getElementById('percent').textContent=pct+'%';document.getElementById('countLabel').textContent=completed+' / '+n;
+    document.getElementById('progressDisc').style.setProperty('--p',pct+'%');
+    const schedule=state.pwaMeta?.itinerary;
+    const dates=Array.isArray(schedule)?schedule.map(t=>String(t[0]||'')).filter(d=>/^\d{2}\/\d{2}$/.test(d)):[];
+    const year=state.tasks.find(t=>/^\d{4}-\d{2}-\d{2}$/.test(t.due||''))?.due?.slice(0,4);
+    const summary=document.getElementById('tripSubline');
+    if(!dates.length||!year){document.getElementById('countdown').textContent='—';if(summary)summary.textContent='Google 계정 연결 후 일정 표시';}
+    else {
+      const start=new Date(year+'-'+dates[0].replace('/','-')+'T00:00:00+09:00'),end=new Date(year+'-'+dates[dates.length-1].replace('/','-')+'T23:59:59+09:00'),today=new Date();
+      const remain=Math.ceil((start-today)/86400000);
+      document.getElementById('countdown').textContent=remain>0?'D-'+remain:remain===0?'D-DAY':today>end?'여행 완료':'여행 중';
+      if(summary)summary.textContent=year+'년 '+dates[0]+' ~ '+dates[dates.length-1]+' · '+ownerList().filter(o=>o!=='함께').join(' & ');
+    }
+    document.getElementById('subcount').textContent='남은 일 '+(n-completed)+'개 · 완료 '+completed+'개';
+  }
   function render(){renderHeader();const root=document.getElementById('main');if(state.view==='trip'){root.innerHTML=renderOfflineNotice()+renderTrip();return}if(state.view==='info'){root.innerHTML=renderOfflineNotice()+renderInfo();return}const content=state.view==='packing'?renderPacking():renderTasks();root.innerHTML=renderOfflineNotice()+'<div class="desktop-layout">'+content+renderSidebar()+'</div>';}
   function renderTasks(){
     const today=todayString();let list=state.tasks.filter(t=>state.owner==='전체'||t.owner===state.owner);
