@@ -136,6 +136,7 @@
   </nav>
 </div>
 <div id="modalRoot" class="hide"></div><div id="toast" class="toast hide" role="status"></div>
+<script src="./vault.js"></script>
 <script>
   'use strict';
   const SAMPLE_TASKS=[];
@@ -249,8 +250,8 @@
 
   function callBackend(method,payload){return pwaBridgeCall(method,payload)}
   const OFFLINE_CACHE_KEY='honeymoon_cache_2026_v1',OFFLINE_QUEUE_KEY='honeymoon_queue_2026_v1';
-  function safeLocalRead(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
-  function safeLocalWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){return false}}
+  function safeLocalRead(key){return HoneymoonVault.get(key)}
+  function safeLocalWrite(key,value){return HoneymoonVault.set(key,value)}
   function saveSnapshot(){
     const okay=safeLocalWrite(OFFLINE_CACHE_KEY,{tasks:state.tasks,packing:state.packing,packingArchive:state.packingArchive,pwaMeta:state.pwaMeta,at:Date.now()});
     if(okay)state.hasCache=true;
@@ -282,16 +283,17 @@
     return h+'</div>';
   }
   function isOfflineFailure(e){return navigator.onLine===false||/network|connection|offline|timed out|timeout|fetch|unavailable|연결|통신/i.test(String(e?.message||e))}
-  function queueOfflineChange(kind,id,field,value,base){
+  async function queueOfflineChange(kind,id,field,value,base){
     if(!state.hasCache){showToast('이 기기에는 오프라인 데이터가 없습니다. 인터넷 연결 후 열어 주세요.');return false}
     const old=state.pending.find(q=>q.kind===kind&&q.id===id&&q.field===field);
     const next=state.pending.filter(q=>!(q.kind===kind&&q.id===id&&q.field===field));
     const origin=old?old.base:base;
     if(value!==origin)next.push({kind,id,field,value,base:origin,at:Date.now()});
     if(!safeLocalWrite(OFFLINE_QUEUE_KEY,next)){showToast('기기 저장 공간에 접근할 수 없어 오프라인 변경을 저장하지 못했습니다.');return false}
+    try{await HoneymoonVault.flush()}catch(e){showToast(e.message);return false}
     state.pending=next;const entry=(kind==='task'?state.tasks:state.packing).find(x=>x.id===id);
     if(entry)entry[field]=value;
-    saveSnapshot();setOfflineStatus();render();showToast(next.length?'오프라인 변경을 기기에 저장했습니다.':'변경을 원래대로 되돌렸습니다.');return true;
+    saveSnapshot();try{await HoneymoonVault.flush()}catch(e){showToast(e.message);return false}setOfflineStatus();render();showToast(next.length?'오프라인 변경을 기기에 저장했습니다.':'변경을 원래대로 되돌렸습니다.');return true;
   }
   async function syncPending(){
     if(!HAS_BACKEND||!state.pending.length||state.syncingOffline||navigator.onLine===false||state.loading||state.packingLoading)return;
@@ -347,7 +349,7 @@
   }
   async function updateStatus(id,status){
     const t=state.tasks.find(x=>x.id===id);if(!t||state.saving.has(id))return;
-    if(!HAS_BACKEND){showToast('미리보기에서는 저장할 수 없습니다.');render();return;}if(!state.online||navigator.onLine===false){const ok=queueOfflineChange('task',id,'status',status,t.status);if(!ok)render();return;}
+    if(!HAS_BACKEND){showToast('미리보기에서는 저장할 수 없습니다.');render();return;}if(!state.online||navigator.onLine===false){const ok=await queueOfflineChange('task',id,'status',status,t.status);if(!ok)render();return;}
     const previous={status:t.status,version:t.version};const started=performance.now();
     state.saving.add(id);t.status=status;paintTaskCard(id);renderHeader();
     try{
@@ -359,7 +361,7 @@
       showToast('Google Sheets 저장 완료 · '+seconds+'초');
       // 서버 응답이 저장 성공을 확인했으므로 시트 전체를 즉시 재조회하지 않습니다.
       // 다른 기기에서 변경한 내용은 탭 전환·25초 주기 동기화로 갱신합니다.
-    }catch(e){t.status=previous.status;t.version=previous.version;if(isOfflineFailure(e)){state.online=false;queueOfflineChange('task',id,'status',status,previous.status)}else showToast('저장 실패: '+e.message);}
+    }catch(e){t.status=previous.status;t.version=previous.version;if(isOfflineFailure(e)){state.online=false;await queueOfflineChange('task',id,'status',status,previous.status)}else showToast('저장 실패: '+e.message);}
     finally{state.saving.delete(id);paintTaskCard(id);renderHeader();}
   }
   function toggleTask(id,checked){updateStatus(id,checked?'완료':'미시작')}
@@ -415,7 +417,7 @@
   }
   async function changePacking(id,field,value){
     const x=state.packing.find(p=>p.id===id);if(!x||state.packingSaving.has(id))return;
-    if(!HAS_BACKEND){showToast('미리보기에서는 저장할 수 없습니다.');render();return}if(!state.online||navigator.onLine===false){const ok=queueOfflineChange('packing',id,field,value,x[field]);if(!ok)render();return}
+    if(!HAS_BACKEND){showToast('미리보기에서는 저장할 수 없습니다.');render();return}if(!state.online||navigator.onLine===false){const ok=await queueOfflineChange('packing',id,field,value,x[field]);if(!ok)render();return}
     const old={bag:x.bag,packed:x.packed,version:x.version};const started=performance.now();
     state.packingSaving.add(id);x[field]=value;paintPackingCard(id);
     try{
@@ -423,7 +425,7 @@
       if(!r||r.id!==id||!r.version)throw new Error('시트 저장 응답을 확인할 수 없습니다.');
       Object.assign(x,r);saveSnapshot();
       showToast('준비물 저장 완료 · '+((performance.now()-started)/1000).toFixed(1)+'초');
-    }catch(e){Object.assign(x,old);if(isOfflineFailure(e)){state.online=false;queueOfflineChange('packing',id,field,value,old[field])}else{showToast('저장 실패: '+e.message);setTimeout(()=>refreshPacking(),300)}}
+    }catch(e){Object.assign(x,old);if(isOfflineFailure(e)){state.online=false;await queueOfflineChange('packing',id,field,value,old[field])}else{showToast('저장 실패: '+e.message);setTimeout(()=>refreshPacking(),300)}}
     finally{state.packingSaving.delete(id);paintPackingCard(id);renderHeader();}
   }
 
@@ -509,7 +511,7 @@
     render();
     if(HAS_BACKEND){setInterval(()=>{if(!document.hidden)refreshAll()},25000);document.addEventListener('visibilitychange',()=>{refreshLocalClock();if(!document.hidden)refreshAll()});}
   }
-  document.addEventListener('DOMContentLoaded',init);
+  document.addEventListener('DOMContentLoaded',()=>HoneymoonVault.boot(init));
   if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('SW registration',e.message)))}
 </script>
 </body>
